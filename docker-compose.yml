@@ -1,0 +1,21 @@
+version: "3"
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: docker
+      MYSQL_USER: docker
+      MYSQL_PASSWORD: docker
+      MYSQL_DATABASE: docker
+  app:
+    build: .
+    restart: always
+    command: node ace serve --watch
+    volumes:
+    - .:/home/node/app
+    - /home/node/app/node_modules
+    ports:
+    - '3333:3333'
+    depends_on:
+      - db
