@@ -23,3 +23,5 @@ import Route from '@ioc:Adonis/Core/Route'
 Route.get('/', async () => {
   return { hello: 'sa' }
 })
+
+Route.resource('users', 'UsersController').apiOnly()
