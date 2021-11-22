@@ -45,4 +45,7 @@ Route.group(() => {
   Route.group(() => {
     Route.resource('bets', 'BetsController').apiOnly()
   }).middleware('auth')
+
+  Route.post('passwords', 'ForgotPasswordsController.store')
+  Route.put('passwords', 'ForgotPasswordsController.update')
 })

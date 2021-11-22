@@ -35,8 +35,8 @@ export default class User extends BaseModel {
   @column()
   public token: string
 
-  @column.dateTime({})
-  public tokenCreatedAt: DateTime
+  @column()
+  public tokenCreatedAt: Date
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
