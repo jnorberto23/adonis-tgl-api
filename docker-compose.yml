@@ -1,21 +1,29 @@
 version: "3"
 services:
   db:
-    image: mysql
-    restart: always
+    image: mysql:latest
     environment:
-      MYSQL_ROOT_PASSWORD: docker
+      TZ: America/Sao_Paulo
+      MYSQL_ROOT_PASSWORD: root
       MYSQL_USER: docker
       MYSQL_PASSWORD: docker
-      MYSQL_DATABASE: docker
+      MYSQL_DATABASE: adonis-tgl
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - '3308:3306'
   app:
     build: .
-    restart: always
     command: node ace serve --watch
-    volumes:
-    - .:/home/node/app
-    - /home/node/app/node_modules
+    environment:
+      CHOKIDAR_USEPOLLING: 1
+      NODE_ENV: development
     ports:
-    - '3333:3333'
+      - '3333:3333'
+    volumes:
+      - .:/usr/app
     depends_on:
       - db
+
+
+
+

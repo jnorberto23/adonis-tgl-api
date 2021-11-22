@@ -20,6 +20,32 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.get('/', async () => {
-  return { hello: 'worsld' }
+Route.where('id', {
+  match: /^[0-9]+$/,
+  cast: (id) => Number(id),
+})
+
+/*
+Route.post('/login', 'AuthController.login')
+
+Route.group(() => {
+  Route.group(() => {
+    Route.resource('users', 'UsersController').except(['store']).apiOnly()
+  }).middleware('auth')
+  Route.post('/users', 'UsersController.store')
+})
+
+*/
+
+Route.group(() => {
+  Route.post('/login', 'AuthController.login')
+  Route.resource('users', 'UsersController').apiOnly()
+  Route.resource('games', 'GamesController').apiOnly()
+
+  Route.group(() => {
+    Route.resource('bets', 'BetsController').apiOnly()
+  }).middleware('auth')
+
+  Route.post('passwords', 'ForgotPasswordsController.store')
+  Route.put('passwords', 'ForgotPasswordsController.update')
 })
