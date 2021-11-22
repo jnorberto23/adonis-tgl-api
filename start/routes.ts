@@ -38,6 +38,11 @@ Route.group(() => {
 */
 
 Route.group(() => {
+  Route.post('/login', 'AuthController.login')
   Route.resource('users', 'UsersController').apiOnly()
   Route.resource('games', 'GamesController').apiOnly()
+
+  Route.group(() => {
+    Route.resource('bets', 'BetsController').apiOnly()
+  }).middleware('auth')
 })
