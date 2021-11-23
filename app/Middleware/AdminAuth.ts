@@ -7,15 +7,6 @@ export default class AdminAuth {
     const id = auth.user?.id
     const { roleId } = await UsersRoles.findByOrFail('user_id', id)
     const { type } = await Roles.findByOrFail('id', roleId)
-
-    type === 'admin'
-      ? await next()
-      : response.status(401).send({
-          errors: [
-            {
-              message: 'E_UNAUTHORIZED_ACCESS: Unauthorized access',
-            },
-          ],
-        })
+    type === 'admin' ? await next() : response.unauthorized()
   }
 }

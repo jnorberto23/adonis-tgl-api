@@ -15,11 +15,7 @@ export default class UsersController {
     await request.validate(storeValidator)
     const data = request.all()
     const user = await User.create(data)
-    const usersRoleData: object = {
-      user_id: user.id,
-      role_id: 1,
-    }
-    await UsersRole.create(usersRoleData)
+    await UsersRole.create({ userId: user.id, roleId: 1 })
     await new NewUserMailer(user).sendLater()
     return user
   }
