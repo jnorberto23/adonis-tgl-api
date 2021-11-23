@@ -1,6 +1,7 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import User from 'App/Models/User'
 import UsersRole from 'App/Models/UsersRoles'
+import NewUserMailer from 'App/Mailers/NewUser'
 import storeValidator from 'App/Validators/User/StoreValidator'
 import updateValidator from 'App/Validators/User/UpdateValidator'
 
@@ -14,6 +15,12 @@ export default class UsersController {
     await request.validate(storeValidator)
     const data = request.all()
     const user = await User.create(data)
+    const usersRoleData: object = {
+      user_id: user.id,
+      role_id: 1,
+    }
+    await UsersRole.create(usersRoleData)
+    await new NewUserMailer(user).sendLater()
     return user
   }
 
