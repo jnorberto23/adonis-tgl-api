@@ -2,6 +2,7 @@ import { DateTime } from 'luxon'
 import Hash from '@ioc:Adonis/Core/Hash'
 import Bet from 'App/Models/Bet'
 import { BaseModel, beforeSave, column, hasMany, HasMany } from '@ioc:Adonis/Lucid/Orm'
+import usersRoles from 'App/Models/UsersRoles'
 
 export default class User extends BaseModel {
   @beforeSave()
@@ -10,6 +11,9 @@ export default class User extends BaseModel {
       user.password = await Hash.make(user.password)
     }
   }
+
+  @hasMany(() => usersRoles)
+  public usersRoles: HasMany<typeof usersRoles>
 
   @hasMany(() => Bet)
   public bet: HasMany<typeof Bet>
