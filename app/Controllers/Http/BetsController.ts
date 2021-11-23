@@ -1,6 +1,8 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Bet from 'App/Models/Bet'
 import Game from 'App/Models/Game'
+import storeValidator from 'App/Validators/Bet/StoreValidator'
+import updateValidator from 'App/Validators/Bet/UpdateValidator'
 
 export default class BetsController {
   public async index({}: HttpContextContract) {
@@ -9,6 +11,7 @@ export default class BetsController {
   }
 
   public async store({ request, response }: HttpContextContract) {
+    await request.validate(storeValidator)
     const data = request.all()
     const userId = data.user_id
     let bets = data.bets
@@ -42,6 +45,7 @@ export default class BetsController {
   // Apenas o Admin pode realizar a alteracao
 
   public async update({ params, request }: HttpContextContract) {
+    await request.validate(updateValidator)
     const bet = await Bet.findOrFail(params.id)
     const data = request.only(['user_id', 'game_id', 'numbers'])
     bet.merge(data)

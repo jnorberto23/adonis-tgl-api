@@ -38,14 +38,26 @@ Route.group(() => {
 */
 
 Route.group(() => {
+  //Login
   Route.post('/login', 'AuthController.login')
-  Route.resource('users', 'UsersController').apiOnly()
-  Route.resource('games', 'GamesController').apiOnly()
 
+  //Users
+  Route.post('/users', 'UsersController.store')
+  Route.group(() => {
+    Route.resource('users', 'UsersController').except(['create', 'index', 'store'])
+  }).middleware('auth')
+
+  //Bets
   Route.group(() => {
     Route.resource('bets', 'BetsController').apiOnly()
   }).middleware('auth')
 
+  //Games
+  Route.group(() => {
+    Route.resource('games', 'GamesController').apiOnly()
+  }).middleware(['auth', 'adminAuth'])
+
+  //Password Recovery
   Route.post('passwords', 'ForgotPasswordsController.store')
   Route.put('passwords', 'ForgotPasswordsController.update')
 })
