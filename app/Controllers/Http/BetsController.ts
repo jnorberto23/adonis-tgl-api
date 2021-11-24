@@ -30,18 +30,33 @@ export default class BetsController {
     try {
       const userId: number | undefined = auth.user?.id
       let bets = request.input('bets')
+      var cartPrice: number = 0
 
-      const checkEachBetPriceAndInsertUserId = async () => {
-        var prices: number = 0
-        for (const i in bets) {
-          bets[i].user_id = userId
-          const game = await Game.findOrFail(bets[i].game_id)
-          prices += game.price
+      for (const i in bets) {
+        bets[i].user_id = userId
+        const game = await Game.findOrFail(bets[i].game_id)
+        const numbersCount = bets[i].numbers.length
+        const numberOutOfRange = bets[i].numbers.some((value: number) => value > game.range)
+        bets[i].numbers = bets[i].numbers.join('-')
+        cartPrice += game.price
+        if (game.maxNumber !== numbersCount) {
+          return response.badRequest({
+            errors: {
+              message: `A Aposta para o jogo #${game.id} ${game.type} (${bets[i].numbers}) é invalida.`,
+              maxNumbers: game.maxNumber,
+              selectedNumbers: numbersCount,
+            },
+          })
         }
-        return prices
+        if (numberOutOfRange) {
+          return response.badRequest({
+            errors: {
+              message: `A Aposta para o jogo #${game.id} ${game.type} (${bets[i].numbers}) é invalida.`,
+              numbersRange: game.range,
+            },
+          })
+        }
       }
-      const cartPrice = await checkEachBetPriceAndInsertUserId()
-
       cartPrice > 30
         ? await Bet.createMany(bets)
         : response.forbidden({
@@ -79,22 +94,28 @@ export default class BetsController {
     }
   }
   // Apenas o Admin pode realizar a alteracao
-
+  // Arrumar
   public async update({ params, auth, request, response }: HttpContextContract) {
-    try {
-      await request.validate(updateValidator)
-      const userId: number | undefined = auth.user?.id
-      const bet = await Bet.findOrFail(params.id)
-      const data = request.only(['game_id', 'numbers'])
-      bet.merge(data)
-      return userId === bet.userId
-        ? await bet.save()
-        : response.unauthorized({ errors: [{ message: 'Essa aposta pertence a outro usuario' }] })
-    } catch (err) {
-      response
-        .status(err.status)
-        .send({ error: { message: 'Oops, algo deu errado ao salvar a sua aposta' } })
+    await request.validate(updateValidator)
+    const userId: number | undefined = auth.user?.id
+    const numbers = request.input('numbers')
+    const bet = await Bet.findOrFail(params?.id)
+    const game = await Game.findOrFail(bet.gameId)
+
+    if (game.maxNumber !== numbers.length) {
+      return response.badRequest({
+        errors: {
+          message: `Não foi possivel refazer a sua aposta`,
+          maxNumbers: game.maxNumber,
+          selectedNumbers: numbers.length,
+        },
+      })
     }
+
+    bet.merge({ numbers: numbers.join('-') })
+    return userId === bet.userId
+      ? await bet.save()
+      : response.unauthorized({ errors: [{ message: 'Essa aposta pertence a outro usuario' }] })
   }
 
   public async destroy({ params, auth, response }: HttpContextContract) {

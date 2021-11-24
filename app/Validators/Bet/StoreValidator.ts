@@ -8,7 +8,7 @@ export default class UserValidator {
     bets: schema.array().members(
       schema.object().members({
         game_id: schema.number([rules.exists({ table: 'games', column: 'id' })]),
-        numbers: schema.string({}, [rules.minLength(1)]),
+        numbers: schema.array([rules.minLength(1), rules.maxLength(50)]).members(schema.number()),
       })
     ),
   })
