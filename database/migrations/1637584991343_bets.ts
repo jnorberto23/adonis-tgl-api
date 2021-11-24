@@ -9,6 +9,8 @@ export default class Bets extends BaseSchema {
       table.integer('user_id').unsigned().references('id').inTable('users').onUpdate('CASCADE') // Se o usuario for apagado, a aposta devera ser apagada tambem?
       table.integer('game_id').unsigned().references('id').inTable('games').onUpdate('CASCADE')
       table.string('numbers').notNullable()
+      table.timestamp('created_at', { useTz: true })
+      table.timestamp('updated_at', { useTz: true })
     })
   }
 
