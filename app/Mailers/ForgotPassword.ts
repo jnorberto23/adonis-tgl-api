@@ -15,5 +15,10 @@ export default class ForgotPasswordMailer extends BaseMailer {
         token: this.user.token,
         url: this.url,
       })
+      .textView('emails/forgot_password-text', {
+        email: this.user.email,
+        token: this.user.token,
+        url: this.url,
+      })
   }
 }

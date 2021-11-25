@@ -39,6 +39,7 @@ export default class CallToBet extends BaseTask {
       Object.entries(usersSanitized).map(([key, value]) => {
         if (value.id === id) {
           usersSanitized.splice(Number(key), 1)
+          console.log(usersSanitized)
         }
       })
     })

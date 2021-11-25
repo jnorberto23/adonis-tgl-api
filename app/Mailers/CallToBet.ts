@@ -13,5 +13,8 @@ export default class ForgotPasswordMailer extends BaseMailer {
       .htmlView('emails/call_to_bet', {
         name: this.user.first_name,
       })
+      .textView('emails/call_to_bet-text', {
+        name: this.user.first_name,
+      })
   }
 }

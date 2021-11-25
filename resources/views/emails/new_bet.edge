@@ -2,7 +2,10 @@
 
 <p style="align: center">Olá {{ name }}, tudo belê?</p>
 <p style="align: center">Seguinte, só tamo passando aqui pra mostrar as suas novas apostas, da uma olhadinha: </p>
-<p style="align: center">{{ bets }}</p>
+@each(bet in bets)
+  <li> {{ bet.type + " | " + bet.numbers + " | R$ " + bet.price}} </li>
+@end
+<p>E tudo isso saiu por R${{ cartPrice }}</p>
 <p style="align: center">É isso, qualquer coisa é só chamar a gente, ok?</p>
 <p style="align: center">Abraços a distancia.</p>
 <p style="align: rith">Equipe TGL</p>
