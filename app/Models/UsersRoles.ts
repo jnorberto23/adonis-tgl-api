@@ -1,13 +1,13 @@
-import { BaseModel, column, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, hasOne, HasOne } from '@ioc:Adonis/Lucid/Orm'
 import User from 'App/Models/User'
 import Role from 'App/Models/Role'
 
 export default class UsersRole extends BaseModel {
-  @belongsTo(() => User)
-  public user: BelongsTo<typeof User>
+  @hasOne(() => User)
+  public user: HasOne<typeof User>
 
-  @belongsTo(() => Role)
-  public role: BelongsTo<typeof Role>
+  @hasOne(() => Role)
+  public role: HasOne<typeof Role>
 
   @column({ isPrimary: true })
   public id: number

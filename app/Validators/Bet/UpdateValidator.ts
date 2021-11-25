@@ -5,9 +5,7 @@ export default class UserValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   public schema = schema.create({
-    user_id: schema.number([rules.exists({ table: 'users', column: 'id' })]),
-    game_id: schema.number([rules.exists({ table: 'games', column: 'id' })]),
-    numbers: schema.string({}, [rules.minLength(1)]),
+    numbers: schema.array([rules.minLength(1), rules.maxLength(50)]).members(schema.number()),
   })
 
   public messages = {}

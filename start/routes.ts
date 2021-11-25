@@ -25,18 +25,6 @@ Route.where('id', {
   cast: (id) => Number(id),
 })
 
-/*
-Route.post('/login', 'AuthController.login')
-
-Route.group(() => {
-  Route.group(() => {
-    Route.resource('users', 'UsersController').except(['store']).apiOnly()
-  }).middleware('auth')
-  Route.post('/users', 'UsersController.store')
-})
-
-*/
-
 Route.group(() => {
   //Login
   Route.post('/login', 'AuthController.login')
@@ -44,7 +32,7 @@ Route.group(() => {
   //Users
   Route.post('/users', 'UsersController.store')
   Route.group(() => {
-    Route.resource('users', 'UsersController').except(['create', 'index', 'store'])
+    Route.resource('users', 'UsersController').except(['create', 'edit', 'store'])
   }).middleware('auth')
 
   //Bets

@@ -9,12 +9,12 @@ export default class ForgotPasswordMailer extends BaseMailer {
     message
       .from('contato@tgl.com')
       .to(this.user.email)
-      .subject('Boas Vindas')
-      .htmlView('emails/new_user', {
-        name: this.user.firstName,
+      .subject('Sentimos a sua falta')
+      .htmlView('emails/call_to_bet', {
+        name: this.user.first_name,
       })
-      .textView('emails/new_user-text', {
-        name: this.user.firstName,
+      .textView('emails/call_to_bet-text', {
+        name: this.user.first_name,
       })
   }
 }
