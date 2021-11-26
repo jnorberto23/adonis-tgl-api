@@ -34,6 +34,7 @@
     "luxon": "^2.1.1",
     "moment": "^2.29.1",
     "mysql": "^2.18.1",
+    "mysql2": "^2.3.3",
     "phc-argon2": "^1.1.2",
     "phc-bcrypt": "^1.0.7",
     "proxy-addr": "^2.0.7",
