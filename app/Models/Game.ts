@@ -1,10 +1,14 @@
 import { DateTime } from 'luxon'
 import Bet from 'App/Models/Bet'
+import Cart from 'App/Models/Cart'
 import { BaseModel, column, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
 
 export default class Game extends BaseModel {
   @belongsTo(() => Bet)
   public bet: BelongsTo<typeof Bet>
+
+  @belongsTo(() => Cart)
+  public cart: BelongsTo<typeof Cart>
 
   @column({ isPrimary: true })
   public id: number

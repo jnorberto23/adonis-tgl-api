@@ -41,8 +41,10 @@ Route.group(() => {
   }).middleware('auth')
 
   //Games
+  Route.get('/games', 'GamesController.index')
+  Route.get('/games/:id', 'GamesController.show')
   Route.group(() => {
-    Route.resource('games', 'GamesController').apiOnly()
+    Route.resource('games', 'GamesController').except(['create', 'edit', 'index', 'show'])
   }).middleware(['auth', 'adminAuth'])
 
   //Password Recovery

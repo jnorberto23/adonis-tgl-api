@@ -4,6 +4,7 @@ import Game from 'App/Models/Game'
 import storeValidator from 'App/Validators/Bet/StoreValidator'
 import updateValidator from 'App/Validators/Bet/UpdateValidator'
 import NewBetMailer from 'App/Mailers/NewBet'
+import Cart from 'App/Models/Cart'
 
 export default class BetsController {
   public async index({ auth, response }: HttpContextContract) {
@@ -32,7 +33,7 @@ export default class BetsController {
       const userId: number | undefined = auth.user?.id
       let bets = request.input('bets')
       let cartPrice: number = 0
-
+      const CartConfig = await Cart.findOrFail(1)
       for (const i in bets) {
         const game = await Game.findOrFail(bets[i].game_id)
         const numbersCount = bets[i].numbers.length
@@ -61,7 +62,7 @@ export default class BetsController {
           })
         }
       }
-      if (cartPrice > 30) {
+      if (cartPrice > CartConfig.value) {
         const betsListToCreate = bets.map(({ type, price, ...item }) => item)
         await Bet.createMany(betsListToCreate)
         await new NewBetMailer(auth.user, bets, cartPrice).sendLater()
@@ -91,7 +92,7 @@ export default class BetsController {
       if (bet.length) {
         return userId === bet[0].userId
           ? bet
-          : response.unauthorized({ errors: [{ message: 'Essa aposta pertence a outro usuario' }] })
+          : response.forbidden({ errors: [{ message: 'Essa aposta pertence a outro usuario' }] })
       } else {
         response.notFound({ errors: [{ message: 'Esse aposta não existe ou foi apagada' }] })
       }
@@ -123,7 +124,7 @@ export default class BetsController {
     bet.merge({ numbers: numbers.join('-') })
     return userId === bet.userId
       ? await bet.save()
-      : response.unauthorized({ errors: [{ message: 'Essa aposta pertence a outro usuario' }] })
+      : response.forbidden({ errors: [{ message: 'Essa aposta pertence a outro usuario' }] })
   }
 
   public async destroy({ params, auth, response }: HttpContextContract) {
@@ -133,7 +134,7 @@ export default class BetsController {
       if (bet) {
         return userId === bet.userId
           ? await bet.delete()
-          : response.unauthorized({ errors: [{ message: 'Essa aposta pertence a outro usuario' }] })
+          : response.forbidden({ errors: [{ message: 'Essa aposta pertence a outro usuario' }] })
       } else {
         response.notFound({ errors: [{ message: 'Esse aposta não existe ou foi apagada' }] })
       }

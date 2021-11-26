@@ -1,16 +1,22 @@
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Game from 'App/Models/Game'
+import Cart from 'App/Models/Cart'
 import gameValidator from 'App/Validators/Game/GameValidator'
 
 export default class GamesController {
   public async index({ response }: HttpContextContract) {
     try {
       const game = await Game.query()
-      return game
+      const cart = await Cart.query()
+
+      return {
+        'min-cart-value': cart[0].value,
+        'types': game,
+       }
     } catch (err) {
       response
         .status(err.status)
-        .send({ error: { message: 'Oops, algo deu errado ao atualizar o jogo' } })
+        .send({ error: { message: 'Oops, algo deu errado ao buscar os jogos' } })
     }
   }
 
@@ -23,7 +29,7 @@ export default class GamesController {
     } catch (err) {
       response
         .status(err.status)
-        .send({ error: { message: 'Oops, algo deu errado ao atualizar o jogo' } })
+        .send({ error: { message: 'Oops, algo deu errado ao criar o jogo' } })
     }
   }
 
@@ -34,7 +40,7 @@ export default class GamesController {
     } catch (err) {
       response
         .status(err.status)
-        .send({ error: { message: 'Oops, algo deu errado ao atualizar o jogo' } })
+        .send({ error: { message: 'Oops, algo deu errado ao buscar o jogo' } })
     }
   }
 
@@ -60,7 +66,7 @@ export default class GamesController {
     } catch (err) {
       response
         .status(err.status)
-        .send({ error: { message: 'Oops, algo deu errado ao atualizar o jogo' } })
+        .send({ error: { message: 'Oops, algo deu errado ao apagar o jogo' } })
     }
   }
 }

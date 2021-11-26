@@ -6,7 +6,7 @@ import CallToBetMailer from 'App/Mailers/CallToBet'
 
 export default class CallToBet extends BaseTask {
   public static get schedule() {
-    return '1 * * * * *'
+    return '1 * * * * *' // return '* 9 * * * *'
   }
   public static get useLock() {
     return false
@@ -29,7 +29,7 @@ export default class CallToBet extends BaseTask {
       }
     })
 
-    const users: number[] = await User.query()
+    const users = await User.query().where('created_at', '<', sevenDaysAgo.toString())
     const usersSanitized: any[] = []
     users.map((user: any) =>
       usersSanitized.push({ id: user.id, email: user.email, first_name: user.firstName })
@@ -39,16 +39,19 @@ export default class CallToBet extends BaseTask {
       Object.entries(usersSanitized).map(([key, value]) => {
         if (value.id === id) {
           usersSanitized.splice(Number(key), 1)
-          console.log(usersSanitized)
         }
       })
     })
 
-    usersSanitized.forEach(async (user) => {
-      await new CallToBetMailer(user).sendLater()
-      console.log(`-> email to ${user.email} sent`)
-    })
-
+    if (usersSanitized.length) {
+      usersSanitized.forEach(async (user) => {
+        await new CallToBetMailer(user).sendLater()
+        console.log(`-> email to ${user.email} sent`)
+      })
+    } else {
+      console.log(`-> there is no user to send`)
+    }
+    console.log(`# Task finished.`)
     return
   }
 }
