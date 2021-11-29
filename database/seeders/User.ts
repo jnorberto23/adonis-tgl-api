@@ -10,6 +10,13 @@ export default class UsersRoleSeeder extends BaseSeeder {
         email: 'joao@gmail.com',
         password: 'root',
       },
+      {
+        firstName: 'Adonis',
+        lastName: 'Silva',
+        username: 'adonis1',
+        email: 'adonis@gmail.com',
+        password: 'adonis',
+      },
     ])
   }
 }

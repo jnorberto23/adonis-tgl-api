@@ -21,52 +21,39 @@ export default class GamesController {
   }
 
   public async store({ request, response }: HttpContextContract) {
-    try {
-      await request.validate(gameValidator)
-      const data = request.all()
-      const game = await Game.create(data)
-      return game
-    } catch (err) {
-      response
-        .status(err.status)
-        .send({ error: { message: 'Oops, algo deu errado ao criar o jogo' } })
-    }
+    await request.validate(gameValidator)
+    const data = request.all()
+    const game = await Game.create(data)
+    return game
   }
 
   public async show({ params, response }: HttpContextContract) {
-    try {
-      const game = await Game.findOrFail(params.id)
-      return game
-    } catch (err) {
-      response
-        .status(err.status)
-        .send({ error: { message: 'Oops, algo deu errado ao buscar o jogo' } })
+    const game = await Game.find(params.id)
+    if (!game) {
+      return response.notFound({ error: { message: 'Oops, esse jogo não existe ou foi apagado' } })
     }
+    return game
   }
 
   public async update({ params, request, response }: HttpContextContract) {
-    try {
-      await request.validate(gameValidator)
-      const game = await Game.findOrFail(params.id)
-      const data = request.only(['type', 'description', 'range', 'price', 'max_number', 'color'])
-      game.merge(data)
-      await game.save()
-      return game
-    } catch (err) {
-      response
-        .status(err.status)
-        .send({ error: { message: 'Oops, algo deu errado ao atualizar o jogo' } })
+    await request.validate(gameValidator)
+    const game = await Game.find(params.id)
+    if (!game) {
+      return response.notFound({ error: { message: 'Oops, esse jogo não existe ou foi apagado' } })
     }
+    const data = request.only(['type', 'description', 'range', 'price', 'max_number', 'color'])
+    game.merge(data)
+    await game.save()
+    return game
   }
 
   public async destroy({ params, response }: HttpContextContract) {
-    try {
-      const game = await Game.findOrFail(params.id)
-      await game.delete()
-    } catch (err) {
-      response
-        .status(err.status)
-        .send({ error: { message: 'Oops, algo deu errado ao apagar o jogo' } })
+    const game = await Game.find(params.id)
+    if (!game) {
+      return response.notFound({
+        error: { message: 'Oops, esse jogo não existe ou já foi apagado' },
+      })
     }
+    await game.delete()
   }
 }
