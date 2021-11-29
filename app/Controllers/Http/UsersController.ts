@@ -36,7 +36,10 @@ export default class UsersController {
 
   public async show({ params, auth, response }: HttpContextContract) {
     try {
-      auth.user?.id !== params.id && response.unauthorized()
+      auth.user?.id !== params.id &&
+        response.forbidden({
+          error: { message: 'Oops, você não tem permissão para realizar essa operacação.' },
+        })
       const user: User | undefined = auth.user
       const oneMonthAgo = moment().subtract('30', 'days').format('YYYY-MM-DD')
       const bets = await Bet.query()
@@ -57,7 +60,10 @@ export default class UsersController {
   public async update({ params, auth, request, response }: HttpContextContract) {
     await request.validate(updateValidator)
     try {
-      auth.user?.id !== params.id && response.unauthorized()
+      auth.user?.id !== params.id &&
+      response.forbidden({
+        error: { message: 'Oops, você não tem permissão para realizar essa operacação.' },
+      })
       const user = await User.findOrFail(params.id)
       const data = request.only(['first_name', 'last_name', 'username'])
       user.merge(data)
@@ -71,8 +77,11 @@ export default class UsersController {
   }
 
   public async destroy({ params, auth, response }: HttpContextContract) {
+    auth.user?.id !== params.id &&
+    response.status(403).send({
+      error: { message: 'Oops, você não tem permissão para realizar essa operacação.' },
+    })
     try {
-      auth.user?.id !== params.id && response.unauthorized()
       const user = await User.findOrFail(params.id)
       await user.delete()
     } catch (err) {
