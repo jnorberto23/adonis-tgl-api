@@ -15,6 +15,9 @@ export default class Cart extends BaseModel {
   @column()
   public value: number
 
+  @column()
+  public status: boolean
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

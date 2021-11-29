@@ -6,10 +6,12 @@ export default class UsersRoleSeeder extends BaseSeeder {
       {
         value: 30,
         type: 'normal',
+        status: true,
       },
       {
         value: 15,
         type: 'promo',
+        status: false,
       },
     ])
   }

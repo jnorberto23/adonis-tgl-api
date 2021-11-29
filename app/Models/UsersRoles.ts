@@ -1,4 +1,4 @@
-import { BaseModel, column, hasOne, HasOne } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, hasOne, HasOne} from '@ioc:Adonis/Lucid/Orm'
 import User from 'App/Models/User'
 import Role from 'App/Models/Role'
 

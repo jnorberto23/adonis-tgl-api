@@ -7,12 +7,12 @@ export default class GamesController {
   public async index({ response }: HttpContextContract) {
     try {
       const game = await Game.query()
-      const cart = await Cart.query()
+      const cart = await Cart.query().where({ status: true })
 
       return {
         'min-cart-value': cart[0].value,
         'types': game,
-       }
+      }
     } catch (err) {
       response
         .status(err.status)
