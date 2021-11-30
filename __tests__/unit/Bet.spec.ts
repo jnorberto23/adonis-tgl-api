@@ -5,7 +5,7 @@ import supertest from 'supertest'
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
 test.group('Bets', () => {
-  // STORE requests
+  // STORE
   test('STORE: should return an error if the user does not exist', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@skke.com',
@@ -117,7 +117,7 @@ test.group('Bets', () => {
     const bets: any[] = []
 
     for (let i = 0; i <= 7; i++) {
-      const numbers: any[] = []
+      const numbers: number[] = []
       while (numbers.length < games[1].maxNumber) {
         var ramdom = Math.floor(Math.random() * games[1].range)
         if (numbers.indexOf(ramdom) === -1) numbers.push(ramdom)
@@ -136,8 +136,8 @@ test.group('Bets', () => {
     assert.equal(response.status, 200)
   })
 
-  // Get requests
-  test('GET - should return an error if an invalid token is passed as a parameter', async (assert) => {
+  // INDEX
+  test('INDEX - should return an error if an invalid token is passed as a parameter', async (assert) => {
     const response = await supertest(BASE_URL)
       .get('/bets')
       .auth('123', { type: 'bearer' })
@@ -146,7 +146,7 @@ test.group('Bets', () => {
     assert.equal(response.status, 401)
   })
 
-  test('GET - must return all user bets if token is valid', async (assert) => {
+  test('INDEX - must return all user bets if token is valid', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@gmail.com',
       password: 'root',
@@ -161,7 +161,7 @@ test.group('Bets', () => {
     assert.equal(response.status, 200)
   })
 
-  //Show requests
+  //SHOW
   test('SHOW - should return an error if the id of the requestor is different from the id of the target bet', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'adonis@gmail.com',
@@ -210,7 +210,7 @@ test.group('Bets', () => {
     assert.exists(response.body[0].numbers)
   })
 
-  // Destroy reqyests
+  // DESTROY
   test('DESTROY: should return an error if the user does not exist', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@skke.com',
@@ -255,6 +255,7 @@ test.group('Bets', () => {
     assert.equal(response.status, 404)
     assert.exists(response.body.errors[0].message)
   })
+
   test('DESTROY: must delete the bet if the token is valid', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@gmail.com',

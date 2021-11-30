@@ -4,8 +4,8 @@ import supertest from 'supertest'
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
 test.group('Users', () => {
-  // Get requests
-  test('GET - should return an error if an invalid token is passed as a parameter', async (assert) => {
+  // INDEX
+  test('INDEX - should return an error if an invalid token is passed as a parameter', async (assert) => {
     const response = await supertest(BASE_URL)
       .get('/users')
       .auth('123', { type: 'bearer' })
@@ -14,7 +14,7 @@ test.group('Users', () => {
     assert.equal(response.status, 401)
   })
 
-  test('GET - must return all users if a valid token is passed as a parameter', async (assert) => {
+  test('INDEX - must return all users if a valid token is passed as a parameter', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@gmail.com',
       password: 'root',
@@ -29,7 +29,7 @@ test.group('Users', () => {
     assert.equal(response.status, 200)
   })
 
-  // SHOW requests
+  // SHOW
   test('SHOW - must return a user if the requesters id is equal to the id passed as parameter', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@gmail.com',
@@ -60,7 +60,7 @@ test.group('Users', () => {
       .expect(403)
     assert.equal(response.status, 403)
   })
-  // STORE requests
+  // STORE
   test('STORE - should return an error if any field is empty', async (assert) => {
     const response = await supertest(BASE_URL)
       .post('/users')
@@ -96,8 +96,8 @@ test.group('Users', () => {
     assert.exists(response.body.username)
     assert.exists(response.body.password)
   })
-  // UPDATE requests
 
+  // UPDATE
   test('UPDATE - should return an error if there is an attempt to update from a non-existent user', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@skke.com',
@@ -157,7 +157,7 @@ test.group('Users', () => {
     assert.exists(response.body.username)
     assert.exists(response.body.password)
   })
-  // DESTROY requests
+  // DESTROY
   test('DESTROY - should return an error if the target user does not exist', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@skke.com',

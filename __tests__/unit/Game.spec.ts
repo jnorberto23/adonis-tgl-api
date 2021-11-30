@@ -4,12 +4,14 @@ import supertest from 'supertest'
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
 test.group('Games', () => {
-  // Get requests
-  test('GET: must return all games', async (assert) => {
+  // INDEX
+  test('INDEX: must return all games', async (assert) => {
     const response = await supertest(BASE_URL).get('/games').expect(200)
     assert.equal(response.status, 200)
     assert.exists(response.body.types[0].type)
   })
+
+  // SHOW
 
   test('SHOW: must return a specific game', async (assert) => {
     const response = await supertest(BASE_URL).get('/games/1').expect(200)
@@ -23,7 +25,7 @@ test.group('Games', () => {
     assert.exists(response.body.error.message)
   })
 
-  // STORE requests
+  // STORE
   test('STORE: should return an error if the user does not exist', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@skke.com',
@@ -106,7 +108,7 @@ test.group('Games', () => {
     assert.exists(response.body.errors[0].message)
   })
 
-  // UPDATE requests
+  // UPDATE
 
   test('UPDATE: should return an error if the user does not exist', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
@@ -188,7 +190,7 @@ test.group('Games', () => {
     assert.exists(response.body.type)
   })
 
-  // DESTROY requests
+  // DESTROY
 
   test('DESTROY: should return an error if the user does not exist', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
