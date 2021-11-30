@@ -4,7 +4,7 @@ import supertest from 'supertest'
 const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
 test.group('Authentication', () => {
-  test('should login a user with correctly password and email and return a token', async (assert) => {
+  test('LOGIN - must login successfully and return a token', async (assert) => {
     const response = await supertest(BASE_URL)
       .post('/login')
       .send({
@@ -16,7 +16,7 @@ test.group('Authentication', () => {
     assert.exists(response.body.token)
   })
 
-  test('should return a error to user for wrong password', async (assert) => {
+  test('LOGIN - should return an error if the password is incorrect', async (assert) => {
     const response = await supertest(BASE_URL)
       .post('/login')
       .send({
@@ -28,7 +28,7 @@ test.group('Authentication', () => {
     assert.exists(response.body.errors[0].message)
   })
 
-  test('should return a error to user for wrong email', async (assert) => {
+  test('LOGIN - should return an error if the email does not exist', async (assert) => {
     const response = await supertest(BASE_URL)
       .post('/login')
       .send({

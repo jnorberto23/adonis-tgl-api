@@ -5,26 +5,26 @@ const BASE_URL = `http://${process.env.HOST}:${process.env.PORT}`
 
 test.group('Games', () => {
   // Get requests
-  test('GET: should return all games', async (assert) => {
+  test('GET: must return all games', async (assert) => {
     const response = await supertest(BASE_URL).get('/games').expect(200)
     assert.equal(response.status, 200)
     assert.exists(response.body.types[0].type)
   })
 
-  test('GET: should return a specific game', async (assert) => {
+  test('SHOW: must return a specific game', async (assert) => {
     const response = await supertest(BASE_URL).get('/games/1').expect(200)
     assert.equal(response.status, 200)
     assert.exists(response.body.type)
   })
 
-  test('GET: should return a error for a GET request of a non existing game', async (assert) => {
+  test('SHOW: should return an error if the game doesnt exist', async (assert) => {
     const response = await supertest(BASE_URL).get('/games/999').expect(404)
     assert.equal(response.status, 404)
     assert.exists(response.body.error.message)
   })
 
   // STORE requests
-  test('STORE: should return error for a post attempt from a non existing user', async (assert) => {
+  test('STORE: should return an error if the user does not exist', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@skke.com',
       password: 'root',
@@ -40,7 +40,7 @@ test.group('Games', () => {
     assert.exists(response.body.errors[0].message)
   })
 
-  test('STORE: should return error for a post attempt from a non admin user', async (assert) => {
+  test('STORE: should return an error if the requesting user is not an admin', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'adonis@gmail.com',
       password: 'adonis',
@@ -56,7 +56,7 @@ test.group('Games', () => {
     assert.exists(response.body.error.message)
   })
 
-  test('STORE: should create the game if all the inputs are filled and the user is admin', async (assert) => {
+  test('STORE: must create a game if all fields are filled and the requester is admin', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@gmail.com',
       password: 'root',
@@ -80,7 +80,7 @@ test.group('Games', () => {
     assert.exists(response.body.type)
   })
 
-  test('STORE: should return a error if a input field are blank or missing', async (assert) => {
+  test('STORE: should return an error if any field is empty', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@gmail.com',
       password: 'root',
@@ -108,7 +108,7 @@ test.group('Games', () => {
 
   // UPDATE requests
 
-  test('UPDATE: should return error for a UPDATE attempt from a non existing user', async (assert) => {
+  test('UPDATE: should return an error if the user does not exist', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@skke.com',
       password: 'root',
@@ -124,7 +124,7 @@ test.group('Games', () => {
     assert.exists(response.body.errors[0].message)
   })
 
-  test('UPDATE: should return error for a UPDATE attempt from a non admin user', async (assert) => {
+  test('UPDATE: should return an error if the requesting user is not an admin', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'adonis@gmail.com',
       password: 'adonis',
@@ -140,7 +140,7 @@ test.group('Games', () => {
     assert.exists(response.body.error.message)
   })
 
-  test('UPDATE: should return error for a UPDATE attempt from a non existing GAME', async (assert) => {
+  test('UPDATE: should return an error if the target game does not exist', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@gmail.com',
       password: 'root',
@@ -164,7 +164,7 @@ test.group('Games', () => {
     assert.exists(response.body.error.message)
   })
 
-  test('UPDATE: should UPDATE the game if all the inputs are filled and the user is admin', async (assert) => {
+  test('UPDATE: must update a game if the fields are filled and the requester is an admin', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@gmail.com',
       password: 'root',
@@ -190,7 +190,7 @@ test.group('Games', () => {
 
   // DESTROY requests
 
-  test('DESTROY: should return error for a DESTROY attempt from a non existing user', async (assert) => {
+  test('DESTROY: should return an error if the user does not exist', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@skke.com',
       password: 'root',
@@ -205,7 +205,7 @@ test.group('Games', () => {
     assert.exists(response.body.errors[0].message)
   })
 
-  test('DESTROY: should return error for a DESTROY attempt from a non admin user', async (assert) => {
+  test('DESTROY: should return an error if the requesting user is not an admin', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'adonis@gmail.com',
       password: 'adonis',
@@ -220,7 +220,7 @@ test.group('Games', () => {
     assert.exists(response.body.error.message)
   })
 
-  test('DESTROY: should return error for a DESTROY attempt from a non existing GAME', async (assert) => {
+  test('DESTROY: should return an error if the target game does not exist', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@gmail.com',
       password: 'root',
@@ -235,7 +235,7 @@ test.group('Games', () => {
     assert.exists(response.body.error.message)
   })
 
-  test('DESTROY: should DESTROY the game if the user is admin', async (assert) => {
+  test('DESTROY: must delete the target game if the requester is admin', async (assert) => {
     const user = await supertest(BASE_URL).post('/login').send({
       email: 'joao@gmail.com',
       password: 'root',

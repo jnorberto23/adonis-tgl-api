@@ -37,7 +37,7 @@ Route.group(() => {
 
   //Bets
   Route.group(() => {
-    Route.resource('bets', 'BetsController').apiOnly()
+    Route.resource('bets', 'BetsController').except(['create', 'edit', 'update'])
   }).middleware('auth')
 
   //Games
