@@ -10,6 +10,8 @@ COPY . .
 
 RUN npm rebuild bcrypt
 
+RUN npm rebuild kafkajs@1.10.0
+
 EXPOSE 3333
 
 CMD ["node", "ace", "serve", "--watch"]

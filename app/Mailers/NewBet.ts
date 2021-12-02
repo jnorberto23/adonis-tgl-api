@@ -1,5 +1,4 @@
 import { BaseMailer, MessageContract } from '@ioc:Adonis/Addons/Mail'
-import Game from 'App/Models/Game'
 
 export default class ForgotPasswordMailer extends BaseMailer {
   constructor(private user, private bets: [], private cartPrice) {

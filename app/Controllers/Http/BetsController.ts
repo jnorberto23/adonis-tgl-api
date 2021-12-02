@@ -3,8 +3,9 @@ import Bet from 'App/Models/Bet'
 import Game from 'App/Models/Game'
 import storeValidator from 'App/Validators/Bet/StoreValidator'
 import updateValidator from 'App/Validators/Bet/UpdateValidator'
-import NewBetMailer from 'App/Mailers/NewBet'
 import Cart from 'App/Models/Cart'
+import MailDelivery from 'App/Services/Kafka/MailDelivery'
+import AdminsList from 'App/Utils/AdminsList'
 
 export default class BetsController {
   public async index({ auth, response }: HttpContextContract) {
@@ -62,10 +63,27 @@ export default class BetsController {
           })
         }
       }
+
       if (cartPrice > CartConfig.value) {
         const betsListToCreate = bets.map(({ type, price, ...item }) => item)
         await Bet.createMany(betsListToCreate)
-        await new NewBetMailer(auth.user, bets, cartPrice).sendLater()
+
+        await new MailDelivery().send(
+          auth.user,
+          { bets, cartPrice },
+          'newBets',
+          'Relatório de apostas'
+        )
+
+        const admins = await AdminsList()
+        admins.forEach(async (admin) => {
+          await new MailDelivery().send(
+            admin,
+            { user: auth.user, bets, cartPrice },
+            'newBetAlertForAdmin',
+            `Nova aposta de ${auth.user?.email}`
+          )
+        })
       } else {
         response.forbidden({
           errors: [{ message: 'O preço mínimo para salvar um carrinho é de R$ 30,00' }],

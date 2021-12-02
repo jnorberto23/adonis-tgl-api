@@ -2,7 +2,7 @@ import { BaseTask } from 'adonis5-scheduler/build'
 import Bet from 'App/Models/Bet'
 import User from 'App/Models/User'
 import moment from 'moment'
-import CallToBetMailer from 'App/Mailers/CallToBet'
+import MailDelivery from 'App/Services/Kafka/MailDelivery'
 
 export default class CallToBet extends BaseTask {
   public static get schedule() {
@@ -45,7 +45,7 @@ export default class CallToBet extends BaseTask {
 
     if (usersSanitized.length) {
       usersSanitized.forEach(async (user) => {
-        await new CallToBetMailer(user).sendLater()
+        await new MailDelivery().send(user, { user }, 'callToBet', 'Sentimos a sua falta')
         console.log(`-> email to ${user.email} sent`)
       })
     } else {
