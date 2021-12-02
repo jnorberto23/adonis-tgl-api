@@ -6,6 +6,7 @@ import NewUserMailer from 'App/Mailers/NewUser'
 import storeValidator from 'App/Validators/User/StoreValidator'
 import updateValidator from 'App/Validators/User/UpdateValidator'
 import moment from 'moment'
+import MailDelivery from 'App/Services/Kafka/MailDelivery'
 
 export default class UsersController {
   public async index({ response }: HttpContextContract) {
@@ -25,7 +26,8 @@ export default class UsersController {
       const data = request.all()
       const user = await User.create(data)
       await UsersRole.create({ userId: user.id, roleId: 1 })
-      await new NewUserMailer(user).sendLater()
+      //await new NewUserMailer(user).sendLater()
+      await new MailDelivery().send(user, { user }, 'newUser', 'Boas vindas')
       return user
     } catch (err) {
       response
@@ -61,9 +63,9 @@ export default class UsersController {
     await request.validate(updateValidator)
     try {
       auth.user?.id !== params.id &&
-      response.forbidden({
-        error: { message: 'Oops, você não tem permissão para realizar essa operacação.' },
-      })
+        response.forbidden({
+          error: { message: 'Oops, você não tem permissão para realizar essa operacação.' },
+        })
       const user = await User.findOrFail(params.id)
       const data = request.only(['first_name', 'last_name', 'username'])
       user.merge(data)
@@ -78,9 +80,9 @@ export default class UsersController {
 
   public async destroy({ params, auth, response }: HttpContextContract) {
     auth.user?.id !== params.id &&
-    response.status(403).send({
-      error: { message: 'Oops, você não tem permissão para realizar essa operacação.' },
-    })
+      response.status(403).send({
+        error: { message: 'Oops, você não tem permissão para realizar essa operacação.' },
+      })
     try {
       const user = await User.findOrFail(params.id)
       await user.delete()

@@ -5,6 +5,7 @@ import storeVallidator from 'App/Validators/ForgotPassword/StoreValidator'
 import updateValidator from 'App/Validators/ForgotPassword/UpdateValidator'
 import crypto from 'crypto'
 import moment from 'moment'
+import MailDelivery from 'App/Services/Kafka/MailDelivery'
 
 export default class ForgotPasswordsController {
   public async store({ request, response }: HttpContextContract) {
@@ -16,7 +17,8 @@ export default class ForgotPasswordsController {
       user.tokenCreatedAt = new Date()
       await user.save()
       const link = `${request.input('redirect_url')}?token=${user.token}`
-      await new ForgotPasswordMailer(user, link).sendLater()
+      // await new ForgotPasswordMailer(user, link).sendLater()
+      await new MailDelivery().send(user, { link }, 'forgotPassword', 'Recupeção de senha')
     } catch (err) {
       return response
         .status(err.status)

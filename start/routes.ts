@@ -27,7 +27,8 @@ Route.where('id', {
 
 Route.group(() => {
   //Login
-  Route.get('/test', 'TestsController.index')
+  Route.post('/login', 'AuthController.login')
+
   //Users
   Route.post('/users', 'UsersController.store')
   Route.group(() => {
