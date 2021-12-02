@@ -1,6 +1,6 @@
 import { Kafka, Producer as KafkaProducer, Message } from 'kafkajs'
 
-interface InProduceProps {
+interface InterfaceProduce {
   topic: string
   messages: Message[]
 }
@@ -17,7 +17,7 @@ export default class Producer {
     this.producer = kafka.producer()
   }
 
-  public async produce({ topic, messages }: InProduceProps) {
+  public async produce({ topic, messages }: InterfaceProduce) {
     await this.producer.connect()
     await this.producer.send({
       topic,
