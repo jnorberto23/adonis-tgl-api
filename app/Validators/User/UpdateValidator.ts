@@ -1,8 +1,11 @@
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import MessagesCustom from '../MessagesCustom'
 
-export default class UserValidator {
-  constructor(protected ctx: HttpContextContract) {}
+export default class UserUpdateValidator extends MessagesCustom {
+  constructor(protected ctx: HttpContextContract) {
+    super()
+  }
 
   public refs = schema.refs({
     userId: this.ctx.auth.user!.id,
@@ -19,6 +22,4 @@ export default class UserValidator {
       }),
     ]),
   })
-
-  public messages = {}
 }

@@ -1,8 +1,11 @@
 import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import MessagesCustom from '../MessagesCustom'
 
-export default class UserValidator {
-  constructor(protected ctx: HttpContextContract) {}
+export default class BetStoreValidator extends MessagesCustom {
+  constructor(protected ctx: HttpContextContract) {
+    super()
+  }
 
   public schema = schema.create({
     bets: schema.array().members(
@@ -12,6 +15,4 @@ export default class UserValidator {
       })
     ),
   })
-
-  public messages = {}
 }
